@@ -1,0 +1,21 @@
+#!/bin/bash
+HOST=$1
+case $HOST in
+{% for instance in public_ip.results %}
+
+  {{ instance.state.tags.host_name }})
+    IP={{ instance.state.ip_address }}
+    ;;
+{% endfor %}
+
+  *)
+    echo "Usage: ./azure-ssh.sh <host>"
+    echo "  Valid hosts: {{ azure_instances.keys() | join(', ') }}"
+    exit 1
+    ;;
+
+esac
+
+ssh_args="-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null"
+ssh_args+=" -i {{ azure_k8s_ssh_dir }}/id_rsa_azure_ansible_k8s"
+ssh $ssh_args azureuser@$IP

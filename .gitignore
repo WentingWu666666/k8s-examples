@@ -1,5 +1,5 @@
 debug/
 sshkeys/
-aws-ssh.sh
+azure-ssh.sh
 .vagrant/
 *.log

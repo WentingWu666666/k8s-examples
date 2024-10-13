@@ -1,0 +1,14 @@
+# This file exists to turn the dynamic AWS groups into simplified names for
+# the playbook.yaml and the group_vars dir.
+
+# Add explicit localhost to get rid of the warning when there are no
+# AWS EC2 hosts yet. 
+localhost
+
+[remote:vars]
+ansible_user=azureuser
+ansible_ssh_common_args='-o StrictHostKeyChecking=no'
+ansible_ssh_private_key_file=/workspaces/k8s-examples/sshkeys/id_rsa_azure_ansible_k8s
+
+[remote:children]
+azure_Microsoft_Compute_virtualMachines

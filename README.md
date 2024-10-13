@@ -74,7 +74,7 @@ was never satisfied with it.
 
 Ultimately, I was able to get a network load balancer going with an address
 solely on the private `172.31/16` network I'm using for the examples. This
-required only minimal additions to the `aws-instances` Ansible role, which is
+required only minimal additions to the `azure-instances` Ansible role, which is
 good, because that is already the most complex in the whole set of roles used
 for these examples, not least because I have to create and remove resources
 without interfering with the rest of someone's AWS account, as well as

@@ -6,11 +6,7 @@
     - docker-ce
     - k3s
     - todo
-- hosts: aws_ec2
+- hosts: remote
   tasks:
     - debug:
         msg: "Once your Kubernetes cluster is up, you can access the todo application at http://{{ inventory_hostname }}/todo/"
-- hosts: vagrant
-  tasks:
-    - debug:
-        msg: "Once your Kubernetes cluster is up, you can access the todo application at http://localhost:48080/todo/"

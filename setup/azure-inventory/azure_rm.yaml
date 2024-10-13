@@ -1,0 +1,8 @@
+plugin: azure.azcollection.azure_rm
+include_vm_resource_groups:
+  - wenting-k8s-test-rg
+hostnames:
+  - computer_name
+keyed_groups:
+  - key: resource_type
+    prefix: "azure"

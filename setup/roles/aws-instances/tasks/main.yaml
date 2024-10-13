@@ -1,9 +1,0 @@
----
-- ansible.builtin.include_tasks: setup.yaml
-  when: not aws_k8s_teardown
-
-- ansible.builtin.include_tasks: teardown.yaml
-  when: aws_k8s_teardown
-
-- ansible.builtin.include_tasks: delete.yaml
-  when: aws_k8s_teardown and aws_k8s_delete

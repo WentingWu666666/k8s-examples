@@ -67,7 +67,6 @@ configuration needs:
 
 ```
 ansible-galaxy collection install -r collections/requirements.yaml
-pip3 install -r requirements.txt
 pip3 install -r collections/ansible_collections/amazon/aws/requirements.txt
 ```
 
@@ -81,10 +80,10 @@ is typically installed by default on most Linux distributions.
 
 ### Variables
 
-Review the AWS variables in `roles/aws-instances/defaults/main.yaml` to see if
+Review the AWS variables in `roles/azure-instances/defaults/main.yaml` to see if
 any changes are required. In particular, you might want to change the
-`aws_region` to a region that is closest to you. If you do change the region,
-you must also change the region in `ec2-inventory/aws_ec2.yaml` to match the
+`azure_region` to a region that is closest to you. If you do change the region,
+you must also change the region in `azure-inventory/azure-rm.yaml` to match the
 region you selected.
 
 ### Running
@@ -94,7 +93,7 @@ machines for each chapter. Just change into the correct directory for that
 chapter and run:
 
 ```
-ansible-playbook aws-setup.yaml
+ansible-playbook azure-setup.yaml
 ```
 
 Note that creation will take a while as we need to wait for the instance to
@@ -116,7 +115,7 @@ ansible-playbook aws-teardown.yaml
 ```
 
 This command will delete any EC2 instances with the `env` tag of
-`aws_ansible_k8s`, so it will clean up any instances from all chapters.
+`azure_ansible_k8s`, so it will clean up any instances from all chapters.
 
 ### Delete
 

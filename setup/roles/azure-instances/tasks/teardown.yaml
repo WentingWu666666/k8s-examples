@@ -1,0 +1,9 @@
+---
+- name: Set default Azure subscription
+  command: az account set --subscription "{{ azure_subscription_id }}"
+
+- name: Ensure the resource group is deleted
+  azure.azcollection.azure_rm_resourcegroup:
+    name: "{{ azure_resource_group }}"
+    force_delete_nonempty: true
+    state: absent

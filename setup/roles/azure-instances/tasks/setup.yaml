@@ -1,0 +1,116 @@
+---
+- name: Install Python libraries
+  pip:
+    requirements: /workspaces/k8s-examples/setup/collections/ansible_collections/azure/azcollection/requirements.txt
+    state: present
+
+- name: ssh key directory
+  ansible.builtin.file:
+    path: "{{ role_path }}/../../../sshkeys"
+    state: directory
+    mode: '0700'
+
+- name: ssh key
+  community.crypto.openssh_keypair:
+    path: "{{ role_path }}/../../../sshkeys/id_rsa_azure_ansible_k8s"
+    comment: "azure_ansible_k8s_key"
+    regenerate: full_idempotence
+  register: azure_ssh_key
+
+- name: Set default Azure subscription
+  command: az account set --subscription "{{ azure_subscription_id }}"
+
+- name: Create a resource group
+  azure.azcollection.azure_rm_resourcegroup:
+    name: "{{ azure_resource_group }}"
+    location: "{{ azure_region }}"
+
+- name: Create a virtual network
+  azure.azcollection.azure_rm_virtualnetwork:
+    resource_group: "{{ azure_resource_group }}"
+    name: myVnet
+    address_prefixes: 192.168.61.0/24
+
+- name: Add subnet
+  azure_rm_subnet:
+    resource_group: "{{ azure_resource_group }}"
+    name: mySubnet
+    address_prefix: 192.168.61.0/24
+    virtual_network: myVnet
+
+- name: Create a public IP address
+  azure.azcollection.azure_rm_publicipaddress:
+    resource_group: "{{ azure_resource_group }}"
+    allocation_method: Static
+    name: "publicIp_{{ item.key }}"
+    tags: 
+      host_name: "{{ item.key }}"
+  with_dict: "{{ azure_instances }}"
+  register: public_ip
+
+- name: Create a network security group that allows SSH
+  azure.azcollection.azure_rm_securitygroup:
+    resource_group: "{{ azure_resource_group }}"
+    name: myNetworkSecurityGroup
+    rules:
+      - name: SSH-inbound
+        protocol: Tcp
+        destination_port_range: 22
+        access: Allow
+        priority: 1001
+        direction: Inbound
+        description: Allow SSH
+      # - name: SSH-outbound
+      #   protocol: Tcp
+      #   destination_port_range: 22
+      #   access: Allow
+      #   priority: 1001
+      #   direction: Outbound
+      #   description: Allow SSH
+
+- name: Create a network interface card
+  azure.azcollection.azure_rm_networkinterface:
+    resource_group: "{{ azure_resource_group }}"
+    name: "nic_{{ item.key }}"
+    virtual_network: myVnet
+    subnet: mySubnet
+    ip_configurations: 
+      - name: ipconfig
+        public_ip_name: "publicIp_{{ item.key }}"
+        private_ip_address: "{{ item.value.ip }}"
+    security_group: myNetworkSecurityGroup
+  with_dict: "{{ azure_instances }}"
+
+- name: Create a VM
+  azure.azcollection.azure_rm_virtualmachine:
+    resource_group: "{{ azure_resource_group }}"
+    name: "{{ item.key }}"
+    vm_size: Standard_DS2_v2
+    admin_username: azureuser
+    ssh_password_enabled: false
+    ssh_public_keys:
+      - path: /home/azureuser/.ssh/authorized_keys
+        key_data: "{{ azure_ssh_key['public_key'] }}"
+    network_interfaces: "nic_{{ item.key }}"
+    image:
+      offer: 0001-com-ubuntu-server-focal
+      publisher: Canonical
+      sku: 20_04-lts-gen2
+      version: latest
+    managed_disk_type: Standard_LRS
+    data_disks:
+      - lun: 0
+        disk_size_gb: 64
+        managed_disk_type: Standard_LRS
+  with_dict: "{{ azure_instances }}"
+  register: azure_vm_output
+
+- name: Debug output of VM creation
+  debug:
+    var: public_ip
+
+- name: ssh script
+  ansible.builtin.template:
+    src: azure-ssh.sh.j2
+    dest: "{{ playbook_dir }}/azure-ssh.sh"
+    mode: '0755'

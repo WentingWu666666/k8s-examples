@@ -1,0 +1,6 @@
+---
+- ansible.builtin.include_tasks: setup.yaml
+  when: not azure_k8s_teardown
+
+- ansible.builtin.include_tasks: teardown.yaml
+  when: azure_k8s_teardown
