@@ -1,0 +1,8 @@
+{
+  "name": "Ansible Azure Dev Container",
+  "build": {
+      "dockerfile": "Dockerfile"
+  },
+  "postCreateCommand": "az login --use-device-code",
+  "remoteUser": "vscode"
+}
