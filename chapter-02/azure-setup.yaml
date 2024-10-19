@@ -3,10 +3,10 @@
   connection: local
   vars:
     ansible_python_interpreter: "{{ ansible_playbook_python }}"
-    aws_instances:
+    azure_k8s_teardown: false
+    azure_k8s_ssh_dir: "../sshkeys"
+    azure_instances:
       host01:
-        type: master
         ip: 192.168.61.11
-        instance_type: t3.medium
   roles:
-    - aws-instances
+    - azure-instances

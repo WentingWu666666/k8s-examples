@@ -1,6 +1,8 @@
 ---
 - hosts: remote
   become: yes
+  vars:
+    crictl_container_engine: crio
   roles:
     - containerd
     - cri-o
