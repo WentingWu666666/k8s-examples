@@ -1,6 +1,16 @@
 ---
 - hosts: remote
   become: yes
+  vars:
+    k8s_initial_master: 192.168.61.4
+    kubeconfig: /etc/rancher/k3s/k3s.yaml
+    todo_kubeconfig: "{{ kubeconfig }}"
+    todo_namespace: default
+    todo_prefix: /
+    todo_postgres_operator: false
+    todo_ingress: false
+    todo_stage: true
+    todo_scaler: true
   roles:
     - tools
     - docker-ce

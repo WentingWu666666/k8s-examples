@@ -14,9 +14,9 @@ spec:
   ports:
   - name: web
     protocol: TCP
-    port: 5000
+    port: 30000
 {% if todo_ingress %}
-    targetPort: 5000
+    targetPort: 30000
 {% else %}
-    nodePort: 5000
+    nodePort: 30000
 {% endif %}
