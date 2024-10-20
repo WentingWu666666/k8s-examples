@@ -1,11 +1,15 @@
 ---
 - hosts: remote
   become: yes
+  vars:
+    iperf_server: true
   roles:
     - tools
     - iperf
 - hosts: clients
   become: yes
+  vars:
+    crictl_container_engine: crio
   roles:
     - cri-o
     - crictl

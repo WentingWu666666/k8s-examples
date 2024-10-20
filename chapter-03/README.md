@@ -11,7 +11,7 @@ Be sure to start by following the instructions in the `setup` folder.
 Start by provisioning:
 
 ```
-ansible-playbook aws-setup.yaml
+ansible-playbook azure-setup.yaml
 ```
 
 Then, run the main playbook:
@@ -27,7 +27,7 @@ server for network testing, so all of our interaction will be with `host01`.
 You can SSH to `host01` and become root by running:
 
 ```
-./aws-ssh.sh host01
+./azure-ssh.sh host01
 sudo su -
 ```
 
